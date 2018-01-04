@@ -1,8 +1,9 @@
-90d93d3bacab5ccb14ad381da96bc8a5 *DESCRIPTION
-05118823ee268cbb1c3d0abad6b04229 *NAMESPACE
+72bc96982b00821e6ca4a19c399a8e31 *DESCRIPTION
+2c105c22d7e787cd760e113f4db870ed *NAMESPACE
 307ccda5d0eb034d990a53afd5443672 *R/LSDsensitivity.R
-afb51ce5d779bf7043e85a97a503ba59 *R/morris_oat.R
-27ad9ee71d698aad075ec5ab0367ebed *build/partial.rdb
+58600a6e5ee11c076beb5daf612ca182 *R/morris.R
+79f30b5fd99a200ff1b6136d73888be0 *R/morris_oat.R
+71be6f973a8aabe64fccee0ae216fadd *build/partial.rdb
 628d95a6aa03293c8fca3f6c11613437 *inst/examples/elementary-effects-SA.R
 15839a5ff397d1a28fed02e790735bde *inst/examples/kriging-sobol-SA.R
 b03fc973c47a970fe42475a86d215711 *inst/examples/optimize-MM.R
