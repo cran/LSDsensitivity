@@ -1,9 +1,9 @@
-390f7b56ba5d6229b1b3fc67824ca07b *DESCRIPTION
+dedae518254d53f92176ae8a9b5abb00 *DESCRIPTION
 13ffa042dc33b05fde3559a53587a142 *NAMESPACE
-b50d1845e3487ea134ee887e2eeb93dc *R/LSDsensitivity.R
+966a3cadf5c46c492b31b2bb22715006 *R/LSDsensitivity.R
 58600a6e5ee11c076beb5daf612ca182 *R/morris.R
 79f30b5fd99a200ff1b6136d73888be0 *R/morris_oat.R
-7c15bc98993fd58691523909a9dbfd6a *build/partial.rdb
+3b2503d666f4d5d1cd16b4cdb4d72208 *build/partial.rdb
 628d95a6aa03293c8fca3f6c11613437 *inst/examples/elementary-effects-SA.R
 15839a5ff397d1a28fed02e790735bde *inst/examples/kriging-sobol-SA.R
 b03fc973c47a970fe42475a86d215711 *inst/examples/optimize-MM.R
@@ -16,7 +16,7 @@ ee4749ac443cb1a9d0bfee3211f5d05f *man/kriging.model.lsd.Rd
 42e559e8d8d6ba0593f5a319d9f978a7 *man/model.pred.lsd.Rd
 20193dc456f55a6d494302739dbde047 *man/optim.model.lsd.Rd
 4ad9ba57c623c62014ae70906d512a0c *man/polynomial.model.lsd.Rd
-0ffd4d238ca9609cb2f7c1a168bb7007 *man/read.doe.lsd.Rd
+8751d14470b7954d4510c5d9b82f9cfb *man/read.doe.lsd.Rd
 c8bec886786ccc468bbde142436d2904 *man/response.surface.lsd.Rd
 80fbe34af1a89174d5e0c31552bc07d3 *man/sobol.decomposition.lsd.Rd
 dfa6e5917a18c57e0ff6e18fbf5b72c4 *man/symmet.test.lsd.rd
