@@ -1257,8 +1257,9 @@ write.response <- function( folder, baseName, iniExp = 1, nExp = 1, outVar = "",
     }
 
     # Save data list to disk
-    save( nExp, nVar, nSize, nInsts, newNameVar, poolData,
-          compress = TRUE, file = tempFile )
+    if( ! rm.temp )
+      try( save( nExp, nVar, nSize, nInsts, newNameVar, poolData,
+                 compress = TRUE, file = tempFile ), silent = TRUE )
   }
 
   # ---- Process data in each experiment (nSize points) ----
@@ -1320,7 +1321,12 @@ write.response <- function( folder, baseName, iniExp = 1, nExp = 1, outVar = "",
   colnames( tresp ) <- c( "Mean", "Variance" )
   respFile <- paste0( folder, "/", baseName, "_", iniExp, "_",
                       iniExp + nExp - 1, "_", outVar, ".csv" )
-  utils::write.csv( tresp, respFile, row.names = FALSE )
+
+  tryCatch( suppressWarnings( utils::write.csv( tresp,
+                                                respFile,
+                                                row.names = FALSE ) ),
+            error = function( e )
+              stop( "Cannot write DoE response file to disk (read-only?)" ) )
 
   if( ! quietly ) {
     cat( "DoE response file saved:", respFile, "\n" )
@@ -1330,7 +1336,7 @@ write.response <- function( folder, baseName, iniExp = 1, nExp = 1, outVar = "",
   }
 
   rm( poolData, resp, tresp )
-  if( rm.temp )
+  if( rm.temp && file.exists( tempFile ) )
     unlink( tempFile )
 }
 
@@ -1378,6 +1384,18 @@ read.doe.lsd <- function( folder, baseName, outVar, does = 1, doeFile = NULL,
         stop( "No valid DoE validation response file" )
       valRespFile <- paste0( folder, "/", files[ 2 ], "_", outVar, ".csv" )
     }
+  }
+
+  # prevent recreation of existing files in read-only paths (like CRAN)
+  if( rm.temp && file.exists( respFile ) &&
+      ( does == 1 || file.exists( valRespFile ) ) ) {
+    res <- tryCatch( suppressWarnings( write( 0, paste0( folder,
+                                                         "/data.tmp" ) ) ),
+                     error = function( e ) e )
+    if( inherits( res, "error" ) )
+      rm.temp <- FALSE
+    else
+      unlink( paste0( folder, "/data.tmp" ) )
   }
 
   # If response files don't exist, try to create them

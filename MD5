@@ -1,9 +1,9 @@
-5474af2aa3c0a68c92499294eeb00633 *DESCRIPTION
+aced2f87302f3b97fe1e4082498f91ac *DESCRIPTION
 b82286d752807cf9fe81447d1035d97d *NAMESPACE
-764f1ffea3e7c05b198579a80536dd4f *R/LSDsensitivity.R
+21e2872a9c91ed90ec9c8fe354247e4a *R/LSDsensitivity.R
 b8a4f324ddb4a527a147c8577fbb3fcd *R/morris.R
 b511ed8825868cf979e3336d9eeaf96e *R/morris_oat.R
-8ae3be7f939361b338ce53c7175d4bc9 *build/partial.rdb
+876dde7b83d04334aa68f756ee681921 *build/partial.rdb
 45804ac97f9bd97000d050f8955dec76 *inst/examples/elementary-effects-SA.R
 ffeb5634e460310c3000e07d8769fa64 *inst/examples/kriging-sobol-SA.R
 48240fdc3b64592045b9a42d4124fa54 *inst/examples/optimize-MM.R
@@ -55,6 +55,7 @@ bf46233bd2eeced0a2e4fff12a74bd66 *inst/extdata/ee/Sim2_1_1.res.gz
 57bdefdbf9a4f61ceab497085677a38a *inst/extdata/ee/Sim2_1_2.res.gz
 6b0cb3cff4edf7d983b9bf344ccb1673 *inst/extdata/ee/Sim2_1_3.res.gz
 7f29117c853078563579dc3fbebc508c *inst/extdata/ee/Sim2_1_40.csv
+8a7d99a0f7bb5d25a6c236a37488f0ce *inst/extdata/ee/Sim2_1_40_var1.csv
 9740a1a896b07a5b76930b15bccdb112 *inst/extdata/ee/Sim2_20_58.res.gz
 bd06188f2fc36938878ede0ce47b160a *inst/extdata/ee/Sim2_20_59.res.gz
 557854145ced04d409df5c5675366cb8 *inst/extdata/ee/Sim2_20_60.res.gz
