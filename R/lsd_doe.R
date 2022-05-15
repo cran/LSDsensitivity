@@ -14,14 +14,81 @@
 read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NULL,
                           respFile = NULL, validFile = NULL, valRespFile = NULL,
                           confFile = NULL, limFile = NULL, iniDrop = 0,
-                          nKeep = -1, saveVars = c(  ), addVars = c(  ),
-                          eval.vars = NULL, eval.run = NULL, pool = TRUE,
+                          nKeep = -1, saveVars = NULL, addVars = NULL,
+                          eval.vars = NULL, eval.run = NULL,
+                          eval.stat = c( "mean", "median" ), pool = TRUE,
                           na.rm = FALSE, rm.temp = TRUE, rm.outl = FALSE,
                           lim.outl = 10, nnodes = 1, quietly = TRUE,
                           instance = 1, posit = NULL,
                           posit.match = c( "fixed", "glob", "regex" ) ) {
 
+  if( is.null( folder ) || ! is.character( folder ) )
+    stop( "Invalid base path to LSD files (folder)" )
+
+  if( is.null( baseName ) || ! is.character( baseName ) || baseName == "" )
+    stop( "Invalid LSD data file base name (baseName)" )
+
+  if( is.null( does ) || ! is.finite( does ) || round( does ) < 1 ||
+      round( does ) > 2 )
+    stop( "Invalid number of experiments/DoE's (does)" )
+
+  if( ! is.null( doeFile ) && ! is.character( doeFile ) )
+    stop( "Invalid DoE specification file (doeFile)" )
+
+  if( ! is.null( respFile ) && ! is.character( respFile ) )
+    stop( "Invalid DoE response file (respFile)" )
+
+  if( ! is.null( validFile ) && ! is.character( validFile ) )
+    stop( "Invalid external validation DoE specification file (validFile)" )
+
+  if( ! is.null( valRespFile ) && ! is.character( valRespFile ) )
+    stop( "Invalid external validation DoE response file (valRespFile)" )
+
+  if( ! is.null( confFile ) && ! is.character( confFile ) )
+    stop( "Invalid LSD baseline configuration file (confFile)" )
+
+  if( ! is.null( limFile ) && ! is.character( limFile ) )
+    stop( "Invalid factor limit ranges file (limFile)" )
+
+  if( ! is.null( saveVars ) && ( ! is.character( saveVars ) ||
+                                 any( saveVars == "" ) ) )
+    stop( "Invalid vector of variables to save (saveVars)" )
+
+  if( ! is.null( addVars ) && ( ! is.character( addVars ) ||
+                                any( addVars == "" ) ) )
+    stop( "Invalid vector of variables to add (addVars)" )
+
+  if( ! is.null( eval.vars ) && ! is.function( eval.vars ) )
+    stop( "Invalid function to evaluate variables (eval.vars)" )
+
+  if( ! is.null( eval.run ) && ! is.function( eval.run ) )
+    stop( "Invalid function to evaluate responses (eval.run)" )
+
+  if( is.null( pool ) || ! is.logical( pool ) )
+    stop( "Invalid pooling switch (pool)" )
+
+  if( is.null( na.rm ) || ! is.logical( na.rm ) )
+    stop( "Invalid NA removal switch (na.rm)" )
+
+  if( is.null( rm.temp ) || ! is.logical( rm.temp ) )
+    stop( "Invalid temporary files removal switch (rm.temp)" )
+
+  if( is.null( rm.outl ) || ! is.logical( rm.outl ) )
+    stop( "Invalid outlier removal switch (rm.outl)" )
+
+  if( is.null( instance ) || ! is.finite( instance ) || round( instance ) < 1 )
+    stop( "Invalid variable instance (instance)" )
+
+  does      <- round( does )
+  instance  <- round( instance )
+  eval.stat <- match.arg( eval.stat )
+
   # ---- Process LSD result files ----
+
+  if( folder == "" )
+    folder <- "."
+
+  baseName <- sub( "\\.lsd$", "", baseName, ignore.case = TRUE )
 
   # get available DoE and response file names
   does.found <- files.doe( folder, baseName )
@@ -37,10 +104,14 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
     doeFile <- paste0( folder, "/", files[ 1 ], ".csv" )
   }
 
+  if( ! file.exists( doeFile ) )
+    stop( "DoE specification file does not exist (", doeFile, ")" )
+
   if( is.null( respFile ) ) {
     if( length( files ) < 1 )
       stop( "No valid response file" )
-    respFile <- paste0( folder, "/", files[ 1 ], "_", outVar, ".csv" )
+    respFile <- paste0( folder, "/", files[ 1 ], "_", eval.stat, "_",
+                        outVar, ".csv" )
   }
 
   if( does > 1 ) {
@@ -49,12 +120,20 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
         stop( "No valid DoE validation file" )
       validFile <- paste0( folder, "/", files[ 2 ], ".csv" )
     }
+
+    if( ! file.exists( validFile ) )
+      stop( "Validation specification file does not exist (", validFile, ")" )
+
     if( is.null( valRespFile ) ) {
       if( length( files ) < 2 )
         stop( "No valid DoE validation response file" )
-      valRespFile <- paste0( folder, "/", files[ 2 ], "_", outVar, ".csv" )
+      valRespFile <- paste0( folder, "/", files[ 2 ], "_", eval.stat, "_",
+                             outVar, ".csv" )
     }
   }
+
+  if( outVar != "" && ! outVar %in% saveVars && ! outVar %in% addVars )
+    saveVars <- outVar
 
   # read response files, if they don't exist, try to create them
   if( rm.temp || ! file.exists( respFile ) ) {
@@ -64,8 +143,8 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
                             posit.match = match.arg( posit.match ), na.rm = na.rm,
                             nExp = size.doe( doeFile )[ 2 ], addVars = addVars,
                             pool = pool, instance = instance, eval.vars = eval.vars,
-                            eval.run = eval.run, saveVars = saveVars,
-                            nnodes = nnodes, quietly = quietly )
+                            eval.run = eval.run, eval.stat = eval.stat,
+                            saveVars = saveVars, nnodes = nnodes, quietly = quietly )
   } else {
     resp <- utils::read.csv( respFile )
     if( ! quietly )
@@ -81,8 +160,9 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
                                posit.match = match.arg( posit.match ),
                                addVars = addVars, eval.vars = eval.vars,
                                pool = pool, instance = instance,
-                               eval.run = eval.run, saveVars = saveVars,
-                               nnodes = nnodes, quietly = quietly )
+                               eval.run = eval.run, eval.stat = eval.stat,
+                               saveVars = saveVars, nnodes = nnodes,
+                               quietly = quietly )
   } else {
     if( does > 1 ) {
       valResp <- utils::read.csv( valRespFile )
@@ -94,9 +174,9 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
   }
 
   # read design of experiments and external validation experiments definitions
-  doe <- utils::read.csv( doeFile )
+  doe <- read.doe( doeFile, instance )
   if( does > 1 ) {
-    valid <- utils::read.csv( validFile )
+    valid <- read.doe( validFile, instance )
   } else
     valid <- NULL
 
@@ -126,13 +206,26 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
   facLimLo <- facLimUp <- facDef <- vector( "numeric" )
   for( i in 1 : length( colnames( doe ) ) ) {
     j <- which( limits$Par == colnames( doe )[ i ], arr.ind = TRUE )
-    if( j == 0 )
-      stop( "Parameter not found in LSD sensitivity file" )
-    facLim[[ i ]] <- list( min = limits$Min[ j ], max = limits$Max[ j ] )
-    facLimLo[ i ] <- limits$Min[ j ]
-    facLimUp[ i ] <- limits$Max[ j ]
+
+    if( length( j ) == 0 )
+      stop( "Corrupt LSD sensitivity file (parameter not found)" )
+
+    if( length( j ) != 1 )
+      stop( "Corrupt LSD sensitivity file (duplicated parameter)" )
+
+    effInst <- instance %% limits$Inst[ j ]
+    if( effInst == 0 )
+      effInst <- limits$Inst[ j ]
+
+    m <- which( colnames( limits ) == paste0( "Min.", effInst ) )
+    M <- which( colnames( limits ) == paste0( "Max.", effInst ) )
+
+    facLim[[ i ]] <- list( min = limits[ j, m ], max = limits[ j, M ] )
+    facLimLo[ i ] <- limits[ j, m ]
+    facLimUp[ i ] <- limits[ j, M ]
     facDef[ i ] <- limits$Def[ j ]
   }
+
   names( facLim ) <- names( facLimLo ) <- names( facLimUp ) <- names( facDef ) <-
     colnames( doe )
 
@@ -149,12 +242,12 @@ read.doe.lsd <- function( folder, baseName, outVar = "", does = 1, doeFile = NUL
     }
   }
 
-  doe <- list( doe = doe, resp = resp, valid = valid, valResp = valResp,
-               facLim = facLim, facLimLo = facLimLo, facLimUp = facLimUp,
-               facDef = facDef, saVarName = outVar )
-  class( doe ) <- "lsd-doe"
+  doeList <- list( doe = doe, resp = resp, valid = valid, valResp = valResp,
+                   facLim = facLim, facLimLo = facLimLo, facLimUp = facLimUp,
+                   facDef = facDef, saVarName = outVar )
+  class( doeList ) <- "doe.lsd"
 
-  return( doe )
+  return( doeList )
 }
 
 
@@ -172,7 +265,8 @@ files.doe <- function( folder, baseName ) {
   folder <- dirname( doeFiles[ 1 ] )
 
   for( i in 1 : length( doeFiles ) )
-    doeFiles[ i ] <- sub( ".csv$", "", basename( doeFiles[ i ] ), ignore.case = TRUE )
+    doeFiles[ i ] <- sub( "\\.csv$", "", basename( doeFiles[ i ] ),
+                          ignore.case = TRUE )
 
   return( list( path = folder, files = doeFiles ) )
 }
@@ -183,7 +277,7 @@ files.doe <- function( folder, baseName ) {
 size.doe <- function( doeFile ) {
 
   # Get basename and remove extension if present
-  baseName <- sub( ".csv$", "", basename( doeFile ), ignore.case = TRUE )
+  baseName <- sub( "\\.csv$", "", basename( doeFile ), ignore.case = TRUE )
 
   # First file must be the a DoE (baseName_xx_yy)
   split <- strsplit( baseName, "_" )[[ 1 ]]
@@ -198,8 +292,42 @@ size.doe <- function( doeFile ) {
             as.integer( split[ length( split ) ] ) -
               as.integer( split[ length( split ) - 1 ] ) + 1 )
   names( doe ) <- c( "ini", "n" )
+
   if( doe[ "n" ] < 1 )
     stop( "Invalid DoE .csv file numbering (must have at least 1 sampling point)" )
+
+  return( doe )
+}
+
+
+# ==== Read LSD DoE specification file for selected instance ====
+
+read.doe <- function( fileName, instance ) {
+
+  if( ! file.exists( fileName ) )
+    stop( "DoE file does not exist (", fileName, ")" )
+
+  doe <- utils::read.csv( fileName )
+
+  split <- strsplit( colnames( doe ), ".", fixed = TRUE )
+
+  names <- cols <- c( )
+  for( i in 1 : length( split ) ) {
+    if( length( split[[ i ]] ) == 1 || split[[ i ]][ 2 ] == 1 ) {
+      names <- append( names, split[[ i ]][ 1 ] )
+      if( instance == 1 )
+        cols <- append( cols, i )
+    } else {
+      if( as.numeric( split[[ i ]][ 2 ] ) == instance )
+        cols <- append( cols, i )
+    }
+  }
+
+  if( length( cols ) != length( names ) )
+    stop( "Selected instance is not available in DoE specification file (instance)" )
+
+  doe <- doe[ cols ]
+  colnames( doe ) <- names
 
   return( doe )
 }
@@ -295,23 +423,42 @@ read.sens <- function( folder = NULL, baseName = NULL, fileName = NULL ) {
     }
   }
 
-  limits <- utils::read.table( file, stringsAsFactors = FALSE )
+  limits <- utils::read.table( file, stringsAsFactors = FALSE, fill = TRUE )
   limits <- limits[ -2 : -3 ]
-  if( ! is.numeric( limits[ 1, 2 ] ) )  # handle newer LSD versions that bring an extra column
+  if( ! is.numeric( limits[ 1, 2 ] ) )  # handle newer LSD versions bringing extra col
     limits <- limits[ -2 ]
-  if( length( limits[ 1, ] ) > 3 ) {
-    warning( "Too many (>2) sensitivity values for a single parameter, using the first two only!",
+
+  if( ( ncol( limits ) - 1 ) %% 2 > 0 ) {
+    warning( "Unused sensitivity values for parameter(s), discarding last one(s)",
              call. = FALSE )
-    limits <- limits[ -4 : - length( limits[ 1, ] ) ]
+    limits <- limits[ - ncol( limits ) ]
   }
 
-  dimnames( limits )[[ 2 ]] <- c( "Par", "Min", "Max" )
-  for( i in 1 : length( limits[ , 1 ] ) )
-    if( limits[ i, "Min" ] > limits[ i, "Max" ] ) {
-      temp <- limits[ i, "Min" ]
-      limits[ i, "Min" ] <- limits[ i, "Max" ]
-      limits[ i, "Max" ] <- temp
+  tit <- inst <- c( )
+
+  for( i in 1 : ( ( ncol( limits ) - 1 ) / 2 ) )
+    tit <- append( tit, c( paste0( "Min.", i ), paste0( "Max.", i ) ) )
+
+  for( i in 1 : nrow( limits ) ) {
+
+    for( j in seq( 2, ncol( limits ), 2 ) ) {
+      if( is.na( limits[ i, j ] ) || is.na( limits[ i, j + 1 ] ) ) {
+        j <- j - 2
+        break
+      }
+
+      if( limits[ i, j ] > limits[ i, j + 1 ] ) {
+        temp <- limits[ i, j ]
+        limits[ i, j ] <- limits[ i, j + 1 ]
+        limits[ i, j + 1 ] <- temp
+      }
     }
+
+    inst[ i ] <- j / 2
+  }
+
+  limits <- cbind( limits, inst )
+  colnames( limits ) <- c( "Par", tit, "Inst" )
 
   return( limits )
 }

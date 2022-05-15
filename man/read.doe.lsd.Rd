@@ -10,18 +10,18 @@ This function reads the sampling data produced by a LSD model design of experime
 read.doe.lsd( folder, baseName, outVar = "", does = 1, doeFile = NULL,
               respFile = NULL, validFile = NULL, valRespFile = NULL,
               confFile = NULL, limFile = NULL, iniDrop = 0, nKeep = -1,
-              saveVars = c( ), addVars = c( ), eval.vars = NULL,
-              eval.run = NULL, pool = TRUE, na.rm = FALSE, rm.temp = TRUE,
-              rm.outl = FALSE, lim.outl = 10, nnodes = 1, quietly = TRUE,
-              instance = 1, posit = NULL,
-              posit.match = c( "fixed", "glob", "regex" ) )
+              saveVars = NULL, addVars = NULL, eval.vars = NULL,
+              eval.run = NULL, eval.stat = c( "mean", "median" ),
+              pool = TRUE, na.rm = FALSE, rm.temp = TRUE, rm.outl = FALSE,
+              lim.outl = 10, nnodes = 1, quietly = TRUE, instance = 1,
+              posit = NULL, posit.match = c( "fixed", "glob", "regex" ) )
 }
 \arguments{
   \item{folder}{
 the \emph{relative} folder path to the LSD DoE data files, using the R working directory as reference (see \code{\link[base]{getwd}()}).
 }
   \item{baseName}{
-the LSD data files base name, without numbering and extension suffixes (should be the same as the name of the baseline \code{.lsd} file, without the extension).
+the LSD data files base name, without numbering and extension suffixes (should be the same as the name of the baseline \code{.lsd} file, without the extension). If \code{.lsd} extension is included, it is automatically removed.
 }
   \item{outVar}{
 the name of an \emph{existing} variable to be used as the reference to perform the sensitivity analysis. If no name is supplied, the default is to use the first element of \code{saveVars} or \code{addVars}.
@@ -54,16 +54,19 @@ integer: the number of initial time steps to drop from analysis (from \code{t = 
 integer: the total number of time steps to keep after \code{iniDrop}, if simulation length is longer than \code{nKeep} discard data from the end of the simulation. The default (-1) is to preserve all data.
 }
   \item{saveVars}{
-a vector of existing LSD variable names to be kept in the data set. The default (\code{c()}) is to save none. At least one existing or new variable (defined by \code{addVars}) must exist. \code{saveVars} also defines the variables which are available for processing by the function defined by \code{eval.vars}, the default \code{saveVars = c()} representing all variables in the results files. For large datasets, this parameter allow reducing the memory required by not loading unnecessary data into memory.
+a vector of existing LSD variable names to be kept in the data set. The default (\code{NULL}) is to save just \code{outVar}, if supplied. At least one existing or new variable (defined by \code{addVars}) must exist. \code{saveVars} also defines the variables which are available for processing by the function defined by \code{eval.vars}, the default \code{saveVars = c()} representing all variables in the results files. For large datasets, this parameter allow reducing the memory required by not loading unnecessary data into memory.
 }
   \item{addVars}{
-a vector of new LSD variable names to be added to the data set. The default (\code{c()}) is to add none. At least one existing or new variable must exist.
+a vector of new LSD variable names to be added to the data set. The default (\code{NULL}) is to add none. At least one existing or new variable must exist.
 }
   \item{eval.vars}{
 a function to recalculate any item of the imported data set, including added variables. The default (NULL) is to have no function (just use selected existing variables as is). If defined, function must take two arguments: the data set for a specific DoE point (time steps in the rows) and the list of variables (columns) in the data set. The function may change any value within the data set but \emph{should not} add or remove rows or columns.
 }
   \item{eval.run}{
-a function to evaluate the DoE response for each experimental sampling point, attributing an optional value to it. The default (NULL) is to have no function (use the selected variable Monte Carlo mean and standard deviation to value the point). If defined, function must take four arguments: (a) the data set (a 3-dimensional array of lists, the numbers of the DoE sampling points in the first dimension, variables in the second, and Monte Carlo runs in the in the third, being each list element a vector with all time-step values for that sample/variable/MC run), (b) the number of the DoE sampling point to evaluate, (c) the index to the analysis variable in the data set, and (d) the applicable confidence interval. The function must return a R list containing four values for the selected sampling point/variable pair: (a) the average value for the response, (b) the response standard deviation, (c) the the number of observations used, and (d) the number of observations discarded.
+a function to evaluate the DoE response for each experimental sampling point, attributing an optional value to it. The default (NULL) is to have no function. In this case, the function uses the selected variable Monte Carlo mean and standard deviation, or the median and the median absolute deviation if \code{median = TRUE}, to value the point. If defined, function must take four arguments: (a) the data set (a 3-dimensional array of lists, the numbers of the DoE sampling points in the first dimension, variables in the second, and Monte Carlo runs in the in the third, being each list element a vector with all time-step values for that sample/variable/MC run), (b) the number of the DoE sampling point to evaluate, (c) the index to the analysis variable in the data set, and (d) the applicable confidence interval. The function must return a R list containing four values for the selected sampling point/variable pair: (a) the average value for the response, (b) the response standard deviation, (c) the the number of observations used, and (d) the number of observations discarded.
+}
+  \item{eval.stat}{
+character: define the statistics to be used to evaluate the DoE response when \code{eval.run = NULL}. Options are \code{"mean"} to use the mean and the standard deviation (default), or \code{"median"}, to use the median and the median absolute deviation (MAD). Names can be abbreviated. If an evaluation function is provided in \code{eval.run}, this option is ignored.
 }
   \item{na.rm}{
 logical: if TRUE NA values are stripped before the computation proceeds.
@@ -87,10 +90,10 @@ logical: if \code{TRUE}, no message confirming file reading/information is print
 logical: if \code{TRUE} (default), create a simpler data array, pooling together only a single instance for each variable. The instance to be considered is provided by \code{instance}. If \code{FALSE}, use all variable instances, which are treated as a single one (indeed, pooling all values...). More control over which instances are used can be obtained by simultaneously using \code{posit}.
 }
   \item{instance}{
-integer: the instance of the variable to be read, for variables that exist in more than one object, if \code{pool = TRUE}, unused otherwise. This number is based on the relative position (column) of the variable in the results file. The default (1) is to read the first instance.
+integer: the instance of the variable to be read, for variables that exist in more than one object. This number is based on the relative position (column) of the variable in the results file. The default (1) is to read the first instance. Only a single existing instance at a time can be read for analysis.
 }
   \item{posit}{
-a string, a vector of strings or an integer vector describing the LSD object position of the variable(s) to select. If an integer vector, it should define the position of a SINGLE LSD object. If a string or vector of strings, each element should define one or more different LSD objects, so the returning matrix may contain variables from more than one object. By setting \code{posit.match}, globbing (wildcard), and regular expressions can be used to select multiple objects at once; in this case, all matching objects are returned.
+a string, a vector of strings or an integer vector describing the LSD object position of the variable(s) to select. If an integer vector, it should define the position of a SINGLE LSD object. If a string or vector of strings, each element should define one or more different LSD objects, so the returning matrix may contain variables from more than one object. By setting \code{posit.match}, globbing (wildcard), and regular expressions can be used to select multiple objects at once; in this case, all matching objects are selected, but only the instance defined by \code{instance} is used.
 }
   \item{posit.match}{
 a string defining how the \code{posit} argument, if provided, should be matched against the LSD object positions. If equal to \code{"fixed"}, the default, only exact matching is done. \code{"glob"} allows using simple wildcard characters ('*' and '?') in \code{posit} for matching. If \code{posit.match="regex"} interpret \code{posit} as POSIX 1003.2 extended regular expression(s). See \code{\link[=regex]{regular expressions}} for details of the different types of regular expressions. Options can be abbreviated.
@@ -178,6 +181,7 @@ dataSet <- read.doe.lsd( path,                 # data files folder
                          nKeep = -1,           # number of time steps to keep (-1=all)
                          saveVars = lsdVars,   # LSD variables to keep in dataset
                          addVars = newVars,    # new variables to add to the LSD dataset
+                         eval.stat = "median", # use median to evaluate runs
                          rm.temp = FALSE,      # reuse temporary speedup files
                          rm.outl = FALSE,      # remove outliers from dataset
                          lim.outl = 10,        # limit non-outliers deviation (# of std. devs.)
