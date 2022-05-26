@@ -1,4 +1,4 @@
-d1d954fbf5b7a08dadf9c09b913f5332 *DESCRIPTION
+0d4d444fd635b0a8f67269243fcc345c *DESCRIPTION
 0156298e4104d19d0ec7dc64c4fba7c2 *NAMESPACE
 56363c2885b92de41c99b02f0a2070a3 *R/kriging.R
 704e58f6cad4be022e9d3edec6bf906f *R/lsd_doe.R
@@ -11,8 +11,8 @@ e8bee795460a0237da84e110c03d5b2f *R/optim.R
 c55737574983d2c176b1a8be6df8a7c2 *R/sobol.R
 977764458bee25adab5b38028aae5e2f *R/tests.R
 43e9633630967aeeb0167e8aa059702c *R/utils.R
-b83015612795d15068a949e56e2cb682 *R/write_resp.R
-e0665ba0f80d547897632dbccd44d292 *build/partial.rdb
+7c78fe72761d1488f0a2d16f49c9ef04 *R/write_resp.R
+8c9cc1c575a4325f1dc380fb2999b7f2 *build/partial.rdb
 628d95a6aa03293c8fca3f6c11613437 *inst/examples/elementary-effects-SA.R
 15839a5ff397d1a28fed02e790735bde *inst/examples/kriging-sobol-SA.R
 b03fc973c47a970fe42475a86d215711 *inst/examples/optimize-MM.R
@@ -65,6 +65,7 @@ bf46233bd2eeced0a2e4fff12a74bd66 *inst/extdata/ee/Sim2_1_1.res.gz
 6b0cb3cff4edf7d983b9bf344ccb1673 *inst/extdata/ee/Sim2_1_3.res.gz
 7f29117c853078563579dc3fbebc508c *inst/extdata/ee/Sim2_1_40.csv
 58ad07b9fb8a5cf26eeb72288021e969 *inst/extdata/ee/Sim2_1_40_mean_var1.csv
+ce492d461b435bf99dc9bc20a8f6b044 *inst/extdata/ee/Sim2_1_40_median_var1.csv
 9740a1a896b07a5b76930b15bccdb112 *inst/extdata/ee/Sim2_20_58.res.gz
 bd06188f2fc36938878ede0ce47b160a *inst/extdata/ee/Sim2_20_59.res.gz
 557854145ced04d409df5c5675366cb8 *inst/extdata/ee/Sim2_20_60.res.gz
@@ -183,6 +184,7 @@ ae6a9565eb3393d44c38626bb5c97452 *inst/extdata/sobol/Sim3_17_50.res.gz
 a2aa6141d83ef55ccb50ee06fd4df3fb *inst/extdata/sobol/Sim3_17_51.res.gz
 7b87fa4974b04593f433f5245817134f *inst/extdata/sobol/Sim3_18_27.csv
 ff3a60c96fcc6ef5a8252a77b26ec37a *inst/extdata/sobol/Sim3_18_27_mean_var3.csv
+39aa7d766b5770f0524194d3307ec4d6 *inst/extdata/sobol/Sim3_18_27_median_var3.csv
 55b2f2f9190d6d3d3e3b62c3af8bd75f *inst/extdata/sobol/Sim3_18_52.res.gz
 16a192b25d18a5ba3aef72ccb4ddd3cb *inst/extdata/sobol/Sim3_18_53.res.gz
 6eb00eef160d15571e2478c5bbec1385 *inst/extdata/sobol/Sim3_18_54.res.gz
@@ -192,6 +194,7 @@ c7881c6c30598e31e9821c504acf57f2 *inst/extdata/sobol/Sim3_19_56.res.gz
 40011a75e1faf1432921f2fb8c735e04 *inst/extdata/sobol/Sim3_1_1.res.gz
 3644e8a0b3a3173ee82898665cfb305a *inst/extdata/sobol/Sim3_1_17.csv
 f35e969012bf62b37054bb9b9bb5f08d *inst/extdata/sobol/Sim3_1_17_mean_var3.csv
+39c77fbb346efe97ca92bbc5fccbc878 *inst/extdata/sobol/Sim3_1_17_median_var3.csv
 a618957ee8c4687e698739ac485bbee3 *inst/extdata/sobol/Sim3_1_2.res.gz
 53754cf106b26db91130c3126aeb2e7d *inst/extdata/sobol/Sim3_1_3.res.gz
 d19a47ce8f67999f4a0e47334fe72e00 *inst/extdata/sobol/Sim3_20_58.res.gz
