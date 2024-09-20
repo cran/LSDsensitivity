@@ -1,7 +1,7 @@
-8049189f7f0704df8da1bff45e0ef7ae *DESCRIPTION
+986c5b12d2f785e271caeb4881e345ba *DESCRIPTION
 0156298e4104d19d0ec7dc64c4fba7c2 *NAMESPACE
 b06cd2fec2539eb07802fe84d114bb78 *R/kriging.R
-704e58f6cad4be022e9d3edec6bf906f *R/lsd_doe.R
+439b72cdfe0602470bdb4e960f041698 *R/lsd_doe.R
 a9e5379aa62244a2217741af53f9347b *R/morris.R
 72eb1e2f73dd6587acc7e347fcaec3f1 *R/morris_ee.R
 48b5f224eefdcf5c2b3a149f4be0d9b8 *R/morris_oat.R
@@ -12,12 +12,12 @@ afce7e5d125ee032137137b73b6417aa *R/sobol.R
 977764458bee25adab5b38028aae5e2f *R/tests.R
 43e9633630967aeeb0167e8aa059702c *R/utils.R
 7c78fe72761d1488f0a2d16f49c9ef04 *R/write_resp.R
-59ab9116da3228930256802ded8107a6 *build/partial.rdb
+54b3c6d3eafae137ec908e7fbb4711b2 *build/partial.rdb
 628d95a6aa03293c8fca3f6c11613437 *inst/examples/elementary-effects-SA.R
 15839a5ff397d1a28fed02e790735bde *inst/examples/kriging-sobol-SA.R
 b03fc973c47a970fe42475a86d215711 *inst/examples/optimize-MM.R
 235a332aea82deaac818a49919840dad *inst/examples/poly-sobol-SA.R
-4ccac52f4b1cf7810316a6b450e5302a *inst/extdata/Sim1.lsd
+06e2626020afd2ffb2797ff82352fcac *inst/extdata/Sim1.lsd
 ffd5a2394b150231228e8c1ca5b40d4c *inst/extdata/Sim1_1.res.gz
 9b09a9d16c94bbbe4623e64ed0648545 *inst/extdata/Sim1_10.res.gz
 44e8772ae914b2a97b1358f41668a177 *inst/extdata/Sim1_2.res.gz
@@ -28,7 +28,7 @@ cb9e0a664dc38850d8f76118a07a6a83 *inst/extdata/Sim1_5.res.gz
 ec01f91e4fe2379b39d65dd21fcf42c2 *inst/extdata/Sim1_7.res.gz
 11cf3909fe3fe3e6b8959ac484feffd7 *inst/extdata/Sim1_8.res.gz
 130dd15cbdb55a6e5b4b9bdf15ef1bd2 *inst/extdata/Sim1_9.res.gz
-d2b28ee1b28988525fde7a34a4b84436 *inst/extdata/ee/Sim2.lsd
+a5d766798826031130a6e8aaaf025cad *inst/extdata/ee/Sim2.lsd
 09b515c28fa501e6c50c441744a7871f *inst/extdata/ee/Sim2.san
 1b6e58eb83606778b467a449f0df6064 *inst/extdata/ee/Sim2_10_28.res.gz
 d362682579bac1bcd404df099a81d8ad *inst/extdata/ee/Sim2_10_29.res.gz
@@ -156,7 +156,7 @@ b289867303a7a74ff1feb083a96ac881 *inst/extdata/ee/Sim2_9_25.res.gz
 93760923e3245798dbd5e4d25ff1bfba *inst/extdata/fun_Rsens.cpp
 9e3e4909a9bf3a4bef992bc439b2cc2a *inst/extdata/model_options.txt
 69809838c07b4a1591054f39cc73c4f5 *inst/extdata/modelinfo.txt
-d2b28ee1b28988525fde7a34a4b84436 *inst/extdata/sobol/Sim3.lsd
+a5d766798826031130a6e8aaaf025cad *inst/extdata/sobol/Sim3.lsd
 09b515c28fa501e6c50c441744a7871f *inst/extdata/sobol/Sim3.san
 0c12a06e5912404c2983a11b823dbb56 *inst/extdata/sobol/Sim3_10_28.res.gz
 14881d6c158c3a19eb879ff1b6aa142e *inst/extdata/sobol/Sim3_10_29.res.gz
@@ -245,7 +245,7 @@ c5116899353f669bb077e12ef101ebb9 *inst/extdata/sobol/Sim3_8_22.res.gz
 5e7fcbce229b140b85e3467083907be8 *inst/extdata/sobol/Sim3_9_25.res.gz
 5efb64cafd41e06712e3204a53f8f047 *inst/extdata/sobol/Sim3_9_26.res.gz
 f85e7e1ca10f2a470447e3d4b0bcf6c9 *inst/extdata/sobol/Sim3_9_27.res.gz
-22aec1828485ced318861671bad029bb *man/LSDsensitivity-package.Rd
+aca410b5e4290fef5bbc1f9bceaaa087 *man/LSDsensitivity-package.Rd
 d5a7691cffb74ed9ee447697cbb5a6aa *man/elementary.effects.lsd.Rd
 7491901401722a83a2b6f124f44622fd *man/ergod.test.lsd.rd
 cd822f40b6decc105ec6d15f0f4ef85b *man/kriging.model.lsd.Rd
@@ -253,7 +253,7 @@ da5765d8195976309e900ecfa4487a22 *man/model.limits.lsd.Rd
 f5eac5a84e56ab6bc482f51bcec9c06e *man/model.pred.lsd.Rd
 540305cde5905299e102a79ab722092d *man/optim.model.lsd.Rd
 36b189f558fe14a01a1286e4e2b6bc62 *man/polynomial.model.lsd.Rd
-d8de8dcf89d5539d11699e75c38382a5 *man/read.doe.lsd.Rd
+650df1460fe0887a7f6a89b62e36e071 *man/read.doe.lsd.Rd
 5fb4b757fc0752a41a58c4a0ce4dd77d *man/response.surface.lsd.Rd
 fa1afd8bc5a44854e0f48023eddd41c9 *man/sobol.decomposition.lsd.Rd
 d91c63cfac83271eae83c79a5ea87a91 *man/symmet.test.lsd.rd
